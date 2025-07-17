@@ -1,0 +1,1036 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>স্পিন এন্ড উইন</title>
+
+<!-- Firebase SDK Scripts (এখানে বসান) -->
+<!-- আপনি firebase_init.js ব্যবহার করছেন, তাই এই লিঙ্কগুলো এখানে যোগ করুন।
+     সাধারণত এই লিঙ্কগুলো firebase_init.js ফাইলের আগে দিতে হয়।
+     নিচের লাইনগুলো Firebase SDK এর ভার্সনের উপর নির্ভর করে পরিবর্তিত হতে পারে। -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- Firebase SDK Scripts (এখানে শেষ) -->
+
+<!-- আপনার Firebase Initialization (এখানে বসান) -->
+<!-- এই ফাইলটিতে firebaseConfig অবজেক্ট এবং firebase.initializeApp() কল থাকবে -->
+
+<!-- Firebase SDK Scripts -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLcClBBBooWiwoj1OB7D2EIudtU8ggE3I",
+    authDomain: "sohel-sp.firebaseapp.com",
+    databaseURL: "https://sohel-sp-default-rtdb.firebaseio.com",
+    projectId: "sohel-sp",
+    storageBucket: "sohel-sp.firebasestorage.app",
+    messagingSenderId: "723062103374",
+    appId: "1:723062103374:web:d5d417b1d89c6fa280521f",
+    measurementId: "G-9D61P0SST3"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+<!-- Firebase SDK End -->
+
+<!-- আপনার Firebase Initialization (এখানে শেষ) -->
+
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #1a1a2e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #24243e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 20px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #1f1f35;
+            border-bottom: 1px solid #333;
+        }
+
+        .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .balance {
+            display: flex;
+            align-items: center;
+            background-color: #000;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 16px;
+        }
+
+        .balance #balance-amount {
+            margin-right: 2px;
+        }
+
+        .add-balance-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 18px;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .bonus-icon,
+        .info-icon {
+            margin-left: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .bonus-icon {
+            background-color: #3a3a5a;
+            border: 1px solid #555;
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .bonus-icon .plus-badge {
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+
+        .info-icon {
+            background-color: #3a3a5a;
+            border: 1px solid #555;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+
+        main {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+
+        .multiplier-ladder {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 10px;
+            width: 45%;
+        }
+
+        .multiplier-item {
+            padding: 12px 0;
+            text-align: center;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s ease-in-out, box-shadow 0.3s ease;
+        }
+
+        .multiplier-item.zero-multiplier {
+            background-color: #7f8c8d;
+        }
+
+
+        .multiplier-item.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px gold, 0 0 5px gold inset;
+            border: 2px solid gold;
+        }
+
+        .stake-result-area {
+            width: 50%;
+            background-color: #1f1f35;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .stake-result-area p {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+
+        #result-display {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        #result-display.lost {
+            color: #e74c3c;
+        }
+
+
+        .controls {
+            margin-top: auto;
+        }
+
+        .stake-adjust-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .stake-adjust-buttons button {
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            flex-grow: 1;
+            margin: 0 3px;
+            transition: background-color 0.2s;
+        }
+
+        .stake-adjust-buttons button:hover {
+            background-color: #4a627a;
+        }
+
+        .stake-adjust-buttons button:first-child {
+            margin-left: 0;
+        }
+
+        .stake-adjust-buttons button:last-child {
+            margin-right: 0;
+        }
+
+
+        .stake-input-group {
+            background-color: #1f1f35;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #stake-amount-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        #stake-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: #555;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        #stake-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        #stake-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .min-max-info {
+            font-size: 12px;
+            color: #aaa;
+            text-align: center;
+            margin-bottom: 20px;
+            padding-left: 15px;
+        }
+
+        #spin-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 0;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color .2s;
+        }
+
+        #spin-btn:hover {
+            background-color: #2980b9;
+        }
+
+        #spin-btn:disabled {
+            background-color: #7f8c8d;
+            cursor: not-allowed;
+        }
+
+
+        footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            background-color: #1f1f35;
+            border-top: 1px solid #333;
+        }
+
+        .footer-item {
+            color: #aaa;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-item .icon {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+<header>
+<div class="back-arrow">←</div>
+<div class="balance">
+<span id="balance-amount">0</span>৳
+                <button class="add-balance-btn" onclick="openDeposit()">+</button>
+</div>
+<div class="header-icons">
+<div class="bonus-icon">BONUS <span class="plus-badge">+</span></div>
+<div class="info-icon">i</div>
+</div>
+</header>
+<main>
+<div class="game-title">SPIN AND WIN</div>
+<div class="game-area">
+<div class="multiplier-ladder" id="multiplierLadder">
+<!-- Multiplier items will be generated here by JavaScript -->
+</div>
+<div class="stake-result-area">
+<p>Your stake:</p>
+<div id="result-display"></div>
+</div>
+</div>
+<div class="controls">
+<div class="stake-adjust-buttons">
+<button id="min-btn">MIN</button>
+<button id="x2-btn">X2</button>
+<button id="half-btn">X/2</button>
+<button id="max-btn">MAX</button>
+</div>
+<div class="stake-input-group">
+<span id="stake-amount-display">40</span>৳
+<input id="stake-slider" max="81379" min="20" step="1" type="range" value="40"/>
+</div>
+<div class="min-max-info">
+                    min <span id="min-stake-val">20</span>৳ - max <span id="max-stake-val">81379.48</span>৳
+                </div>
+<button id="spin-btn">STAKE</button>
+</div>
+</main>
+<footer>
+<div class="footer-item" onclick="openSettings()"><span class="icon">⚙️</span> SETTINGS</div>
+<div class="footer-item" onclick="openDeposit()"><span class="icon">⚡</span> ডিপোজিট</div>
+<div class="footer-item" onclick="openWithdraw()"><span class="icon">💸</span> উইথড্র</div>
+</footer>
+
+<!-- Deposit Popup Section -->
+<div id="deposit-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:#1a1a2ed9; backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:999;">
+<div style="background-color:#24243e; padding:20px; border-radius:10px; width:350px; position:relative;">
+<div onclick="closeDeposit()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px; color:white;">✖️</div>
+<h2 style="text-align:center; margin-bottom:20px;">ডিপোজিট</h2>
+<input id="deposit-number" placeholder="Enter Your Number" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="text"/>
+<input id="deposit-amount" placeholder="Amount (৳)" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="number"/>
+<select id="deposit-paymentMethod" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;">
+<option value="Nagad">Nagad</option>
+<option value="Bkash">Bkash</option>
+</select>
+<button onclick="submitDeposit()" style="width:100%; padding:12px; background-color:#3498db; border:none; border-radius:8px; color:white; font-size:16px; cursor:pointer;">Send Deposit Request</button>
+<div id="deposit-message" style="margin-top:10px; text-align:center; color:#2ecc71;"></div>
+</div>
+</div>
+
+<!-- Withdraw Popup Section -->
+<div id="withdraw-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:#1a1a2ed9; backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:999;">
+<div style="background-color:#24243e; padding:20px; border-radius:10px; width:350px; position:relative;">
+<div onclick="closeWithdraw()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px; color:white;">✖️</div>
+<h2 style="text-align:center; margin-bottom:20px;">উইথড্র</h2>
+<input id="withdraw-number" placeholder="Enter Your Number" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="text"/>
+<input id="withdraw-amount" placeholder="Amount (৳)" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="number"/>
+<select id="withdraw-paymentMethod" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;">
+<option value="Nagad">Nagad</option>
+<option value="Bkash">Bkash</option>
+</select>
+<button onclick="submitWithdraw()" style="width:100%; padding:12px; background-color:#e74c3c; border:none; border-radius:8px; color:white; font-size:16px; cursor:pointer;">Send Withdraw Request</button>
+<div id="withdraw-message" style="margin-top:10px; text-align:center; color:#2ecc71;"></div>
+</div>
+</div>
+
+<!-- Settings Popup Section -->
+<div id="settings-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:#1a1a2ed9; backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:999;">
+<div style="background-color:#24243e; padding:20px; border-radius:10px; width:350px; position:relative;">
+<div onclick="closeSettings()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px; color:white;">✖️</div>
+<h2 style="text-align:center; margin-bottom:20px;">Settings</h2>
+<input id="settings-name" placeholder="Enter Your Name" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="text"/>
+<input id="settings-code" placeholder="Your Code" readonly="" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="text"/>
+<input id="settings-email" placeholder="Enter Email" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="email"/>
+<input id="settings-number" placeholder="Enter Your Number" style="width:100%; padding:10px; border:none; border-radius:8px; margin-bottom:10px; background-color:#1f1f35; color:white;" type="text"/>
+<button onclick="saveSettings()" style="width:100%; padding:12px; background-color:#16a085; border:none; border-radius:8px; color:white; font-size:16px; cursor:pointer;">Save</button>
+<div id="settingsSaveMessage" style="margin-top:10px; text-align:center; color:#2ecc71; display:none;">✅ Saved Successfully</div>
+</div>
+</div>
+
+<!-- BONUS Section -->
+<div id="bonus-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:#1a1a2ed9; backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:999;">
+<div style="background-color:#24243e; padding:20px; border-radius:10px; width:320px; position:relative; text-align:center;">
+<div onclick="closeBonus()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px; color:white;">✖️</div>
+<h2 style="color:#f1c40f;">🎁 Daily Bonus</h2>
+<p style="margin: 15px 0; color: #aaa;">প্রতিদিনের জন্য একটি বোনাস সংগ্রহ করুন!</p>
+<button id="claim-bonus-btn" onclick="claimBonus()" style="padding:12px 20px; background-color:#f39c12; border:none; border-radius:8px; color:white; font-size:16px; cursor:pointer;">Claim Bonus</button>
+<div id="bonus-message" style="margin-top:10px; color:#2ecc71;"></div>
+</div>
+</div>
+
+<!-- INFO Section -->
+<div id="info-section" style="display:none; position:fixed; top:0; left:0; width:100%; height:100vh; background-color:#1a1a2ed9; backdrop-filter:blur(5px); display:flex; justify-content:center; align-items:center; z-index:999;">
+<div style="background-color:#24243e; padding:20px; border-radius:10px; width:320px; position:relative; text-align:left; color:white;">
+<div onclick="closeInfo()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:18px;">✖️</div>
+<h2 style="text-align:center; color:#3498db;">ℹ️ তথ্য</h2>
+<ul style="padding-left:20px; line-height:1.7;">
+<li>🎮 <b>Spin and Win:</b> আপনার বাজি দিন, স্পিন করুন ও জিতুন!</li>
+<li>🎁 <b>Daily Bonus:</b> প্রতিদিন একবার লগইন করে বোনাস সংগ্রহ করুন।</li>
+<li>💰 <b>ডিপোজিট ও উইথড্র:</b> Nagad/Bkash দিয়ে সহজেই লেনদেন করুন।</li>
+<li>📞 <b>সাপোর্ট:</b> কোনো সমস্যায় যোগাযোগ করুন <a href="https://t.me/sohelvai122" style="color:#f1c40f;" target="_blank">@sohelvai122</a></li>
+</ul>
+</div>
+</div>
+
+<script>
+let userId = null;
+let userData = null; // Store user specific data (balance, profile)
+let gameSettings = null; // Store global game settings
+
+// Firebase Authentication Listener - ইউজার লগইন করলে বা পরিবর্তন হলে কাজ করবে
+auth.onAuthStateChanged(user => {
+    if (user) {
+        userId = user.uid;
+        console.log('Signed in as:', userId);
+        loadUserData();      // ব্যবহারকারীর তথ্য লোড করুন
+        loadGameSettings();  // গেমের সেটিংস লোড করুন
+    } else {
+        // যদি কোন ইউজার লগইন করা না থাকে, তাহলে Anonymous হিসেবে লগইন করুন
+        auth.signInAnonymously()
+            .then((userCredential) => {
+                userId = userCredential.user.uid;
+                console.log('Signed in anonymously as:', userId);
+                loadUserData();
+                loadGameSettings();
+            })
+            .catch((error) => {
+                console.error("Error signing in anonymously:", error);
+                alert("গেম লোড করতে সমস্যা হয়েছে। অনুগ্রহ করে রিফ্রেশ করুন।");
+            });
+    }
+});
+
+
+// DOM Elements
+const balanceAmountElement = document.getElementById('balance-amount');
+const stakeAmountDisplayElement = document.getElementById('stake-amount-display');
+const stakeSliderElement = document.getElementById('stake-slider');
+const spinButtonElement = document.getElementById('spin-btn');
+const resultDisplayElement = document.getElementById('result-display');
+let multiplierItems; // মাল্টিপ্লায়ার আইটেমগুলো এখানে যুক্ত হবে
+
+// Default fallback settings in case Firestore fails or takes time to load
+const defaultFallbackSettings = {
+    initialBalance: 1000,
+    minStake: 20,
+    maxStake: 81379,
+    spinInterval: 800,
+    multipliers: [
+        {value: 0, color: "#7f8c8d", weight: 3}, // x0-এর জন্য উচ্চতর সম্ভাবনা (হার)
+        {value: 2, color: "#3498db", weight: 2},
+        {value: 70, color: "#2ecc71", weight: 1},
+        {value: 700, color: "#e74c3c", weight: 1},
+        {value: 1000, color: "#16a085", weight: 1}
+    ]
+};
+
+let currentBalance = defaultFallbackSettings.initialBalance;
+let minStake = defaultFallbackSettings.minStake;
+let maxStake = defaultFallbackSettings.maxStake;
+let spinSpeedInterval = defaultFallbackSettings.spinInterval;
+let currentStake = Math.max(minStake, 40);
+
+
+// Firestore থেকে ব্যবহারকারীর ডেটা লোড করুন
+function loadUserData() {
+    if (!userId) return; // Wait for userId to be set
+    const userDocRef = db.collection('users').doc(userId);
+
+    userDocRef.onSnapshot((docSnapshot) => {
+        if (docSnapshot.exists) {
+            userData = docSnapshot.data();
+            currentBalance = userData.balance;
+            balanceAmountElement.textContent = currentBalance;
+            console.log('User data loaded:', userData);
+        } else {
+            // যদি ব্যবহারকারীর ডেটা না থাকে, তবে প্রাথমিক ডেটা তৈরি করুন
+            userDocRef.set({
+                balance: defaultFallbackSettings.initialBalance,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                name: localStorage.getItem('userName') || '',
+                email: localStorage.getItem('userEmail') || '',
+                number: localStorage.getItem('userNumber') || '',
+                code: generateCode() // আপনার ব্যবহারকারীর কোড তৈরি করুন
+            }).then(() => {
+                console.log("Initial user data created in Firestore.");
+            }).catch(error => {
+                console.error("Error creating user data:", error);
+            });
+        }
+        updateGameControls(); // কন্ট্রোলগুলো আপডেট করুন
+    }, (error) => {
+        console.error("Error loading user data:", error);
+        alert("ব্যালেন্স লোড করতে সমস্যা হয়েছে।");
+    });
+}
+
+// Firestore-এ ব্যবহারকারীর ব্যালেন্স আপডেট করুন
+function updateUserBalance(amountChange) {
+    if (!userId) return;
+    db.collection('users').doc(userId).update({
+        balance: firebase.firestore.FieldValue.increment(amountChange)
+    }).then(() => {
+        console.log(`Balance updated by ${amountChange}`);
+    }).catch(error => {
+        console.error("Error updating balance:", error);
+        alert("ব্যালেন্স আপডেট করতে সমস্যা হয়েছে।");
+    });
+}
+
+// Firestore থেকে গেম সেটিংস লোড করুন
+function loadGameSettings() {
+    db.collection('settings').doc('gameDefaults').onSnapshot((docSnapshot) => {
+        if (docSnapshot.exists && docSnapshot.data()) {
+            gameSettings = docSnapshot.data();
+            minStake = gameSettings.minStake;
+            maxStake = gameSettings.maxStake;
+            spinSpeedInterval = gameSettings.spinInterval;
+            renderMultipliers(gameSettings.multipliers); // নতুন সেটিংস দিয়ে মাল্টিপ্লায়ার পুনরায় রেন্ডার করুন
+            console.log('Game settings loaded:', gameSettings);
+        } else {
+            console.warn("Firestore-এ কোনো গেম সেটিংস পাওয়া যায়নি, ফলব্যাক ডিফল্ট ব্যবহার করা হচ্ছে।");
+            gameSettings = defaultFallbackSettings;
+            // ঐচ্ছিকভাবে, ডিফল্ট সেটিংস Firestore-এ Push করুন যদি সেটআপ না থাকে
+            db.collection('settings').doc('gameDefaults').set(defaultFallbackSettings)
+                .then(() => console.log("Default settings saved to Firestore."))
+                .catch(error => console.error("Error saving default settings:", error));
+            renderMultipliers(gameSettings.multipliers); // ফলব্যাক দিয়ে রেন্ডার করুন
+        }
+        updateGameControls(); // গেম কন্ট্রোল আপডেট করুন
+    }, (error) => {
+        console.error("Error loading game settings:", error);
+        gameSettings = defaultFallbackSettings; // ত্রুটি হলে ফলব্যাক ব্যবহার করুন
+        renderMultipliers(gameSettings.multipliers); // ফলব্যাক দিয়ে রেন্ডার করুন
+        alert("গেম সেটিংস লোড করতে সমস্যা হয়েছে।");
+    });
+}
+
+function updateGameControls() {
+    stakeSliderElement.min = minStake;
+    stakeSliderElement.max = maxStake;
+    // বর্তমান স্টেককে নতুন ন্যূনতম/সর্বোচ্চের বাইরে গেলে সামঞ্জস্য করুন
+    if (currentStake < minStake) currentStake = minStake;
+    if (currentStake > maxStake) currentStake = maxStake;
+    stakeSliderElement.value = currentStake;
+
+    stakeAmountDisplayElement.textContent = currentStake;
+    document.getElementById('min-stake-val').textContent = minStake;
+    document.getElementById('max-stake-val').textContent = maxStake;
+}
+
+// গতিশীলভাবে মাল্টিপ্লায়ার রেন্ডার করার ফাংশন
+function renderMultipliers(multipliersData) {
+    const multiplierLadder = document.getElementById('multiplierLadder');
+    multiplierLadder.innerHTML = ''; // বিদ্যমানগুলি পরিষ্কার করুন
+
+    if (!multipliersData || multipliersData.length === 0) {
+        multipliersData = defaultFallbackSettings.multipliers;
+    }
+
+    // প্রদর্শনের সুবিধার জন্য মাল্টিপ্লায়ারগুলিকে ছোট থেকে বড় মানে সাজান
+    multipliersData.sort((a, b) => a.value - b.value);
+
+    // ল্যাডার ভিজ্যুয়ালের জন্য উল্টোভাবে পুনরাবৃত্তি করুন (যেমন x0 উপরে, x1000 নিচে যদি মানে ASC হয়)
+    for (let i = multipliersData.length - 1; i >= 0; i--) {
+        const m = multipliersData[i];
+        const div = document.createElement('div');
+        div.className = 'multiplier-item';
+        if (m.value === 0) {
+            div.classList.add('zero-multiplier');
+        }
+        div.setAttribute('data-multiplier', m.value);
+        div.style.backgroundColor = m.color;
+        div.textContent = `x${m.value}`;
+        multiplierLadder.appendChild(div);
+    }
+    multiplierItems = document.querySelectorAll('.multiplier-item'); // মাল্টিপ্লায়ার আইটেমগুলো পুনরায় বরাদ্দ করুন
+}
+
+// DOM লোড হলে প্রাথমিক রেন্ডার
+document.addEventListener('DOMContentLoaded', () => {
+    renderMultipliers(defaultFallbackSettings.multipliers); // Firebase লোড হওয়ার সময় ফলব্যাক দিয়ে রেন্ডার করুন
+    updateGameControls();
+});
+
+
+// যখন স্লাইডার পরিবর্তন হয়, তখন স্টেক ডিসপ্লে আপডেট করুন
+stakeSliderElement.addEventListener('input', (event) => {
+    currentStake = parseInt(event.target.value);
+    stakeAmountDisplayElement.textContent = currentStake;
+});
+
+// স্পিন বোতাম ক্লিক লিসেনার
+spinButtonElement.addEventListener('click', () => {
+    if (currentStake > currentBalance) {
+        resultDisplayElement.textContent = "অপর্যাপ্ত ব্যালেন্স!";
+        resultDisplayElement.classList.add('lost');
+        return;
+    }
+    if (currentStake < minStake) {
+        resultDisplayElement.textContent = `ন্যূনতম বাজি ${minStake}৳`;
+        return;
+    }
+
+    // দ্রুত প্রতিক্রিয়ার জন্য স্থানীয়ভাবে স্টেক কাটুন, আসল আপডেট স্পিন শেষ হওয়ার পরে
+    currentBalance -= currentStake;
+    balanceAmountElement.textContent = currentBalance;
+    resultDisplayElement.textContent = "স্পিন হচ্ছে...";
+    resultDisplayElement.classList.remove('lost');
+    spinButtonElement.disabled = true;
+
+    // স্পিন অ্যানিমেশন সিমুলেট করুন এবং ফলাফল পান
+    simulateSpin().then(winningMultiplierValue => {
+        const winnings = currentStake * winningMultiplierValue;
+        const balanceChange = winnings - currentStake; // নেট পরিবর্তন
+        updateUserBalance(balanceChange); // Firebase-এ ব্যালেন্স আপডেট করুন
+
+        if (winningMultiplierValue === 0) {
+            resultDisplayElement.textContent = `আপনি হারলেন ${currentStake}৳ (x0)`;
+            resultDisplayElement.classList.add('lost');
+        } else if (winnings > 0) {
+            resultDisplayElement.textContent = `আপনি জিতলেন ${winnings}৳ (x${winningMultiplierValue})!`;
+            resultDisplayElement.classList.remove('lost');
+        } else {
+            resultDisplayElement.textContent = `এইবার জয় নেই।`;
+            resultDisplayElement.classList.add('lost');
+        }
+        spinButtonElement.disabled = false;
+    });
+});
+
+// স্পিন ফাংশন সিমুলেট করুন
+function simulateSpin() {
+    return new Promise(resolve => {
+        let activeIndex = 0;
+        let spinCount = 0;
+        const totalSpins = 20 + Math.floor(Math.random() * 10);
+
+        if (multiplierItems) {
+            multiplierItems.forEach(item => item.classList.remove('active'));
+        }
+
+        const spinIntervalId = setInterval(() => {
+            if (multiplierItems && multiplierItems.length > 0) {
+                multiplierItems[activeIndex % multiplierItems.length].classList.remove('active');
+                activeIndex++;
+                multiplierItems[activeIndex % multiplierItems.length].classList.add('active');
+            }
+            spinCount++;
+
+            if (spinCount >= totalSpins) {
+                clearInterval(spinIntervalId);
+
+                // লোড হওয়া সেটিংস থেকে মাল্টিপ্লায়ারের ওজন ব্যবহার করে বিজয়ী মাল্টিপ্লায়ার নির্ধারণ করুন
+                const multipliers = gameSettings ? gameSettings.multipliers : defaultFallbackSettings.multipliers;
+                const probabilityArray = [];
+                multipliers.forEach(m => {
+                    for (let i = 0; i < m.weight; i++) {
+                        probabilityArray.push(m.value);
+                    }
+                });
+
+                const randomResultIndex = Math.floor(Math.random() * probabilityArray.length);
+                const winningMultiplier = probabilityArray[randomResultIndex];
+
+                if (multiplierItems) {
+                    multiplierItems.forEach(item => item.classList.remove('active'));
+                    const winningElement = Array.from(multiplierItems).find(item => parseInt(item.dataset.multiplier) === winningMultiplier);
+                    if (winningElement) {
+                        winningElement.classList.add('active');
+                    }
+                }
+                resolve(winningMultiplier);
+            }
+        }, spinSpeedInterval);
+    });
+}
+
+// MIN, MAX, X2, X/2 বোতামগুলির জন্য ইভেন্ট লিসেনার যোগ করুন
+document.getElementById('min-btn').addEventListener('click', () => {
+    currentStake = minStake;
+    stakeSliderElement.value = currentStake;
+    stakeAmountDisplayElement.textContent = currentStake;
+});
+
+document.getElementById('max-btn').addEventListener('click', () => {
+    let effectiveMax = Math.min(maxStake, currentBalance);
+    if (effectiveMax < minStake) effectiveMax = minStake;
+    currentStake = effectiveMax;
+    stakeSliderElement.value = currentStake;
+    stakeAmountDisplayElement.textContent = currentStake;
+});
+
+document.getElementById('x2-btn').addEventListener('click', () => {
+    let newStake = currentStake * 2;
+    if (newStake > maxStake) newStake = maxStake;
+    if (newStake > currentBalance && currentBalance >= minStake) newStake = currentBalance;
+    currentStake = Math.max(minStake, newStake);
+    stakeSliderElement.value = currentStake;
+    stakeAmountDisplayElement.textContent = currentStake;
+});
+
+document.getElementById('half-btn').addEventListener('click', () => {
+    let newStake = Math.floor(currentStake / 2);
+    currentStake = Math.max(minStake, newStake);
+    stakeSliderElement.value = currentStake;
+    stakeAmountDisplayElement.textContent = currentStake;
+});
+
+
+function openDeposit() {
+    document.getElementById('deposit-section').style.display = 'flex';
+    document.getElementById('deposit-message').textContent = '';
+    document.getElementById('deposit-number').value = userData?.number || ''; // ব্যবহারকারীর ডেটা থেকে পূরণ করুন
+    document.getElementById('deposit-amount').value = '';
+}
+function closeDeposit() {
+    document.getElementById('deposit-section').style.display = 'none';
+}
+
+function submitDeposit() {
+    const number = document.getElementById('deposit-number').value;
+    const amount = parseFloat(document.getElementById('deposit-amount').value);
+    const method = document.getElementById('deposit-paymentMethod').value;
+    const depositMessageElement = document.getElementById('deposit-message');
+
+    if(number === "" || isNaN(amount) || amount <= 0) {
+        depositMessageElement.textContent = "দয়া করে সঠিক নাম্বার এবং পরিমাণ দিন।";
+        depositMessageElement.style.color = '#e74c3c';
+        return;
+    }
+    if (!userId) {
+        depositMessageElement.textContent = "ব্যবহারকারীর আইডি পাওয়া যায়নি।";
+        depositMessageElement.style.color = '#e74c3c';
+        console.error("No user ID for deposit.");
+        return;
+    }
+
+    db.collection('deposits').add({
+        userId: userId,
+        userName: userData?.name || 'Anonymous',
+        userCode: userData?.code || '',
+        number: number,
+        amount: amount,
+        method: method,
+        status: 'pending', // 'pending', 'approved', 'rejected'
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        depositMessageElement.textContent = "✅ ডিপোজিট অনুরোধ পাঠানো হয়েছে!";
+        depositMessageElement.style.color = '#2ecc71';
+        document.getElementById('deposit-amount').value = '';
+        // Note: ব্যালেন্স এখানে আপডেট হয় না। অ্যাডমিন এটি অনুমোদন করবে।
+    })
+    .catch(error => {
+        depositMessageElement.textContent = "ডিপোজিট অনুরোধ পাঠাতে ব্যর্থ।";
+        depositMessageElement.style.color = '#e74c3c';
+        console.error("Error submitting deposit:", error);
+    });
+}
+
+
+function openWithdraw() {
+    document.getElementById('withdraw-section').style.display = 'flex';
+    document.getElementById('withdraw-message').textContent = '';
+    document.getElementById('withdraw-number').value = userData?.number || ''; // ব্যবহারকারীর ডেটা থেকে পূরণ করুন
+    document.getElementById('withdraw-amount').value = '';
+}
+function closeWithdraw() {
+    document.getElementById('withdraw-section').style.display = 'none';
+}
+
+function submitWithdraw() {
+    const number = document.getElementById('withdraw-number').value;
+    const amount = parseFloat(document.getElementById('withdraw-amount').value);
+    const method = document.getElementById('withdraw-paymentMethod').value;
+    const withdrawMessageElement = document.getElementById('withdraw-message');
+
+    if(number === "" || isNaN(amount) || amount <= 0) {
+        withdrawMessageElement.textContent = "দয়া করে সঠিক নাম্বার এবং পরিমাণ দিন।";
+        withdrawMessageElement.style.color = '#e74c3c';
+        return;
+    }
+    if (amount > currentBalance) {
+        withdrawMessageElement.textContent = "আপনার পর্যাপ্ত ব্যালেন্স নেই।";
+        withdrawMessageElement.style.color = '#e74c3c';
+        return;
+    }
+    if (!userId) {
+        withdrawMessageElement.textContent = "ব্যবহারকারীর আইডি পাওয়া যায়নি।";
+        withdrawMessageElement.style.color = '#e74c3c';
+        console.error("No user ID for withdrawal.");
+        return;
+    }
+
+    // উইথড্র অনুরোধের জন্য তাৎক্ষণিক ব্যালেন্স কর্তন করুন (অ্যাডমিন পরে নিশ্চিত/ফেরত করবে)
+    updateUserBalance(-amount); // ব্যালেন্স থেকে কর্তন করুন
+    // local currentBalance immediately reflects the deduction
+    currentBalance -= amount; // লোকাল স্টেট আপডেট করুন দ্রুত প্রতিক্রিয়ার জন্য
+    balanceAmountElement.textContent = currentBalance;
+
+
+    db.collection('withdrawals').add({
+        userId: userId,
+        userName: userData?.name || 'Anonymous',
+        userCode: userData?.code || '',
+        number: number,
+        amount: amount,
+        method: method,
+        status: 'pending', // 'pending', 'approved', 'rejected'
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        withdrawMessageElement.textContent = "✅ উইথড্র অনুরোধ পাঠানো হয়েছে!";
+        withdrawMessageElement.style.color = '#2ecc71';
+        document.getElementById('withdraw-amount').value = '';
+    })
+    .catch(error => {
+        // অনুরোধ ব্যর্থ হলে, ব্যালেন্স ফেরত দেওয়ার চেষ্টা করুন
+        updateUserBalance(amount);
+        currentBalance += amount;
+        balanceAmountElement.textContent = currentBalance;
+        withdrawMessageElement.textContent = "উইথড্র অনুরোধ পাঠাতে ব্যর্থ।";
+        withdrawMessageElement.style.color = '#e74c3c';
+        console.error("Error submitting withdrawal:", error);
+    });
+}
+
+
+function openSettings() {
+    document.getElementById('settings-section').style.display = 'flex';
+    document.getElementById('settingsSaveMessage').style.display = 'none';
+    // যদি userData লোড হয়, তাহলে সেটিংস ইনপুটগুলি পূর্ব-পূরণ করুন
+    document.getElementById('settings-name').value = userData?.name || '';
+    document.getElementById('settings-email').value = userData?.email || '';
+    document.getElementById('settings-number').value = userData?.number || '';
+    document.getElementById('settings-code').value = userData?.code || generateCode(); // কোড নিশ্চিত করুন
+}
+function closeSettings() {
+    document.getElementById('settings-section').style.display = 'none';
+}
+
+function saveSettings() {
+    if (!userId) {
+        alert("ব্যবহারকারীর তথ্য সংরক্ষণ করা যাচ্ছে না।");
+        return;
+    }
+    const name = document.getElementById('settings-name').value;
+    const email = document.getElementById('settings-email').value;
+    const number = document.getElementById('settings-number').value;
+    const code = document.getElementById('settings-code').value; // এটি রিডওনলি হওয়া উচিত
+
+    if(name === "" || email === "" || number === "") {
+        alert("দয়া করে সমস্ত তথ্য পূরণ করুন।");
+        return;
+    }
+
+    db.collection('users').doc(userId).update({
+        name: name,
+        email: email,
+        number: number,
+        code: code // কোড পরিবর্তিত হলে আপডেট করুন, যদিও এটি ব্যবহারকারীর জন্য স্থির হওয়া উচিত
+    })
+    .then(() => {
+        document.getElementById('settingsSaveMessage').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('settingsSaveMessage').style.display = 'none';
+        }, 3000);
+        // localStorage-এ অতিরিক্ত সঞ্চয়না, শুধুমাত্র যদি ফায়ারবেস উপলব্ধ না হয় তবে ডেটা ধরে রাখতে চান
+        // localStorage.setItem('userName', name);
+        // localStorage.setItem('userEmail', email);
+        // localStorage.setItem('userNumber', number);
+        // localStorage.setItem('userCode', code);
+    })
+    .catch(error => {
+        console.error("Error saving user settings:", error);
+        alert("সেটিংস সংরক্ষণ করতে ব্যর্থ।");
+    });
+}
+
+function generateCode() {
+    // অননুমোদিত লগইনের জন্য, userCode অনন্য এবং স্থিতিশীল হবে
+    let existingCode = localStorage.getItem('userCode');
+    if (!existingCode) {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        localStorage.setItem('userCode', code);
+        return code;
+    }
+    return existingCode;
+}
+
+// BONUS Section Logic
+document.querySelector('.bonus-icon').addEventListener('click', () => {
+    document.getElementById('bonus-section').style.display = 'flex';
+    checkBonusStatus();
+});
+
+function closeBonus() {
+    document.getElementById('bonus-section').style.display = 'none';
+}
+
+function checkBonusStatus() {
+    const today = new Date().toDateString();
+    const lastClaim = localStorage.getItem('lastBonusDate');
+    const bonusMessageElement = document.getElementById('bonus-message');
+    const claimBonusBtn = document.getElementById('claim-bonus-btn');
+
+    if (lastClaim === today) {
+        bonusMessageElement.textContent = "😔 আজকের বোনাস ইতিমধ্যেই নেয়া হয়েছে!";
+        claimBonusBtn.disabled = true;
+    } else {
+        bonusMessageElement.textContent = "";
+        claimBonusBtn.disabled = false;
+    }
+}
+
+function claimBonus() {
+    const today = new Date().toDateString();
+    const bonusAmount = Math.floor(Math.random() * 50) + 20;
+
+    // Firebase-এ ব্যালেন্স আপডেট করুন
+    updateUserBalance(bonusAmount);
+    localStorage.setItem('lastBonusDate', today); // বোনাস দাবির তারিখ স্থানীয়ভাবে সংরক্ষণ করুন
+
+    document.getElementById('bonus-message').textContent = `✅ ${bonusAmount}৳ বোনাস পেয়েছেন! আবার কাল আসবেন!`;
+    document.getElementById('claim-bonus-btn').disabled = true;
+}
+
+// INFO Section Logic
+document.querySelector('.info-icon').addEventListener('click', () => {
+    document.getElementById('info-section').style.display = 'flex';
+});
+
+function closeInfo() {
+    document.getElementById('info-section').style.display = 'none';
+}
+
+document.querySelector('.back-arrow').addEventListener('click', function() {
+    window.history.back(); // আগের পৃষ্ঠায় ফিরে যান
+});
+
+// প্রাথমিক লোড সমন্বয়
+window.addEventListener('load', function() {
+    // এই লোড ইভেন্টটিতে অন্যান্য DOM-সম্পর্কিত কোড যোগ করুন
+    updateGameControls();
+    checkBonusStatus(); // লোড হওয়ার সময় বোনাসের স্ট্যাটাস পরীক্ষা করুন
+});
+</script>
+</body>
+</html>
